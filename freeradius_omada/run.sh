@@ -2,7 +2,6 @@
 
 echo "Lese Konfiguration ein..."
 
-# Verschiedene Wege des Supervisors abfangen, falls die Variable anders benannt ist
 if [ ! -z "$SUPERVISOR_SHARED_SECRET" ]; then
     SECRET=$SUPERVISOR_SHARED_SECRET
 elif [ ! -z "$shared_secret" ]; then
@@ -10,21 +9,23 @@ elif [ ! -z "$shared_secret" ]; then
 elif [ ! -z "$SHARED_SECRET" ]; then
     SECRET=$SHARED_SECRET
 else
-    # Letzter Rettungsanker: Falls alles leer ist, ein Fallback setzen
     SECRET="OmadaMasterPasswort123"
 fi
 
 echo "Konfiguriere FreeRADIUS für Omada..."
 
+# Verzeichnisberechtigungen sicherstellen
+chmod 640 /etc/raddb/clients.conf
+
 # Clients-Datei schreiben
 cat << EOF > /etc/raddb/clients.conf
 client omada_clients {
-    ipaddr   = *
+    ipaddr   = 0.0.0.0/0
     secret   = ${SECRET}
 }
 EOF
 
-echo "RADIUS-Client erfolgreich eingerichtet. Starte Server..."
+echo "RADIUS-Client erfolgreich eingerichtet. Starte Server im Debug-Modus..."
 
-# FreeRADIUS starten
-exec radiusd -f
+# -X schaltet den Debug-Modus ein, damit wir eintreffende Pakete im Log sehen!
+exec radiusd -f -X
