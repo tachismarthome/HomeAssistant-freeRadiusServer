@@ -1,15 +1,14 @@
 name: "FreeRADIUS für Omada"
 description: "Minimaler RADIUS-Ersatz für den Omada OC200 Controller"
-version: "0.1.6"
+version: "0.1.7"
 slug: "freeradius_omada"
 init: false
 arch:
   - amd64
   - aarch64
 startup: services
-# Hier sind die beiden korrekten Rechte-Zuweisungen:
-supervisor_api: true
-hassio_role: manager
+# Das aktiviert den API-Proxy-Zugriff für das Skript:
+homeassistant_api: true
 ports:
   1812/udp: 1812
   1813/udp: 1813
@@ -17,3 +16,4 @@ options:
   shared_secret: "MeinSicheresMasterPasswort123"
 schema:
   shared_secret: password
+
