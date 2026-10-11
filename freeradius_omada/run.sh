@@ -1,20 +1,23 @@
 #!/usr/bin/env bash
 
-echo "Lese Konfiguration ein..."
+echo "Lese Konfiguration aus options.json..."
 
-if [ ! -z "$SUPERVISOR_SHARED_SECRET" ]; then
-    SECRET=$SUPERVISOR_SHARED_SECRET
-elif [ ! -z "$shared_secret" ]; then
-    SECRET=$shared_secret
-elif [ ! -z "$SHARED_SECRET" ]; then
-    SECRET=$SHARED_SECRET
+# Home Assistant speichert die Benutzeroberflächen-Optionen standardmäßig in dieser JSON-Datei
+if [ -f "/data/options.json" ]; then
+    # Extrahiert das Passwort sauber aus der JSON-Datei
+    SECRET=$(sed -n 's/.*"shared_secret": *"\([^"]*\)".*/\1/p' /data/options.json)
+fi
+
+# Fallback, falls die Datei wider Erwarten nicht existiert oder leer ist
+if [ -z "$SECRET" ]; then
+    echo "WARNUNG: Passwort konnte nicht aus der UI gelesen werden. Nutze Standard-Fallback!"
+    SECRET="MeinSicheresMasterPasswort123"
 else
-    SECRET="OmadaMasterPasswort123"
+    echo "Passwort erfolgreich aus der Benutzeroberfläche geladen."
 fi
 
 echo "Konfiguriere FreeRADIUS für Omada..."
 
-# Verzeichnisberechtigungen sicherstellen
 chmod 640 /etc/raddb/clients.conf
 
 # Clients-Datei schreiben
@@ -26,6 +29,4 @@ client omada_clients {
 EOF
 
 echo "RADIUS-Client erfolgreich eingerichtet. Starte Server im Debug-Modus..."
-
-# -X schaltet den Debug-Modus ein, damit wir eintreffende Pakete im Log sehen!
 exec radiusd -f -X
