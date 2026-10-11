@@ -1,13 +1,15 @@
-bash
-#!/usr/bin/with-contenv bashio
+#!/usr/bin/env bash
+# Sichert ab, dass echte Bash genutzt wird
 
-# 1. Passwort aus der HA-Konfiguration auslesen
+# Lädt die Home Assistant Bashio-Bibliothek manuell
+source /usr/lib/bashio/bashio.sh
+
+# Passwort aus der HA-Konfiguration auslesen
 SECRET=$(bashio::config 'shared_secret')
 
 echo "Konfiguriere FreeRADIUS für Omada..."
 
-# 2. Clients-Datei sauber neu schreiben
-# Das Sternchen '*' erlaubt Anfragen von JEDER IP-Adresse im Netzwerk
+# Clients-Datei sauber neu schreiben
 cat << EOF > /etc/raddb/clients.conf
 client omada_clients {
     ipaddr   = *
@@ -17,5 +19,5 @@ EOF
 
 echo "RADIUS-Client erfolgreich eingerichtet. Starte Server..."
 
-# 3. FreeRADIUS im Vordergrund starten (ohne -X Debugging, um Passwort-Logs sauber zu halten)
+# FreeRADIUS im Vordergrund starten
 exec radiusd -f
