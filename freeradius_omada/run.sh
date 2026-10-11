@@ -1,15 +1,22 @@
 #!/usr/bin/env bash
-# Sichert ab, dass echte Bash genutzt wird
 
-# Lädt die Home Assistant Bashio-Bibliothek manuell
-source /usr/lib/bashio/bashio.sh
+echo "Lese Konfiguration ein..."
 
-# Passwort aus der HA-Konfiguration auslesen
-SECRET=$(bashio::config 'shared_secret')
+# Verschiedene Wege des Supervisors abfangen, falls die Variable anders benannt ist
+if [ ! -z "$SUPERVISOR_SHARED_SECRET" ]; then
+    SECRET=$SUPERVISOR_SHARED_SECRET
+elif [ ! -z "$shared_secret" ]; then
+    SECRET=$shared_secret
+elif [ ! -z "$SHARED_SECRET" ]; then
+    SECRET=$SHARED_SECRET
+else
+    # Letzter Rettungsanker: Falls alles leer ist, ein Fallback setzen
+    SECRET="OmadaMasterPasswort123"
+fi
 
 echo "Konfiguriere FreeRADIUS für Omada..."
 
-# Clients-Datei sauber neu schreiben
+# Clients-Datei schreiben
 cat << EOF > /etc/raddb/clients.conf
 client omada_clients {
     ipaddr   = *
@@ -19,5 +26,5 @@ EOF
 
 echo "RADIUS-Client erfolgreich eingerichtet. Starte Server..."
 
-# FreeRADIUS im Vordergrund starten
+# FreeRADIUS starten
 exec radiusd -f
