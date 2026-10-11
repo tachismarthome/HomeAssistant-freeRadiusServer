@@ -1,14 +1,15 @@
 name: "FreeRADIUS für Omada"
 description: "Minimaler RADIUS-Ersatz für den Omada OC200 Controller"
-version: "0.1.5"
+version: "0.1.6"
 slug: "freeradius_omada"
 init: false
 arch:
   - amd64
   - aarch64
 startup: services
-# Erlaubt dem Add-on, das Passwort aus den Optionen zu lesen:
-hassio_api: true
+# Hier sind die beiden korrekten Rechte-Zuweisungen:
+supervisor_api: true
+hassio_role: manager
 ports:
   1812/udp: 1812
   1813/udp: 1813
