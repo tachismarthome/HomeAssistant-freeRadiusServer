@@ -1,6 +1,6 @@
 name: "FreeRADIUS für Omada"
 description: "Minimaler RADIUS-Ersatz für den Omada OC200 Controller"
-version: "0.1.8"
+version: "0.1.9"
 slug: "freeradius_omada"
 init: false
 arch:
