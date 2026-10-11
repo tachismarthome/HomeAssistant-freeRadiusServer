@@ -13,4 +13,4 @@ ports:
 options:
   shared_secret: "MySecureMasterPassword123"
 schema:
-  shared_secret: str
+  shared_secret: password
