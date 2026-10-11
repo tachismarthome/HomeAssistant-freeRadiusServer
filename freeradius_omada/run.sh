@@ -28,5 +28,5 @@ client omada_clients {
 }
 EOF
 
-echo "RADIUS-Client erfolgreich eingerichtet. Starte Server im Debug-Modus..."
-exec radiusd -f -X
+echo "RADIUS-Client erfolgreich eingerichtet. Starte Server..."
+exec radiusd -f
