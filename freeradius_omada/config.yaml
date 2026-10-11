@@ -1,0 +1,16 @@
+name: "FreeRADIUS für Omada"
+description: "Minimaler RADIUS-Ersatz für den Omada OC200 Controller"
+version: "1.1.0"
+slug: "freeradius_omada"
+init: false
+arch:
+  - amd64
+  - aarch64
+startup: services
+ports:
+  1812/udp: 1812
+  1813/udp: 1813
+options:
+  shared_secret: "MeinSicheresMasterPasswort123"
+schema:
+  shared_secret: str
