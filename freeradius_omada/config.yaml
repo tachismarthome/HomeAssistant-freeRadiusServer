@@ -6,6 +6,7 @@ init: false
 arch:
   - amd64
   - aarch64
+  - armv7
 startup: services
 ports:
   1812/udp: 1812
